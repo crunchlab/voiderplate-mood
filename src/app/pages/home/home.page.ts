@@ -19,6 +19,13 @@ import { Struttura } from '../../models/struttura/struttura';
 import { FeatureToStrutturaService } from '../../services/transformer/feature-to-struttura.service';
 import comuni from '../../../assets/data/comuni.json';
 import { AboutPage } from '../about/about.page';
+
+import { getMessaging, onMessage } from "firebase/messaging";
+
+
+
+import { initializeApp } from "firebase/app";
+
 SwiperCore.use([Virtual]);
 @Component({
     selector: 'app-home',
@@ -45,6 +52,15 @@ export class HomePage implements OnInit {
     public tipologieSelezionate: string[] = [];
     private marker: maplibregl.Marker;
 
+    firebaseConfig = {
+        apiKey: "AIzaSyBrrHj-LuFs9IvKsNoHIq5a7-jJWK95QBk",
+        authDomain: "moodmetervoid.firebaseapp.com",
+        databaseURL: "https://moodmetervoid-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "moodmetervoid",
+        storageBucket: "moodmetervoid.appspot.com",
+        messagingSenderId: "45331867927",
+        appId: "1:45331867927:web:cd34e172e861e40daf6f52"
+    };
     public struttureCirclePaint: maplibregl.CirclePaint = {
         'circle-radius': {
             'base': 1.75,
@@ -152,6 +168,15 @@ export class HomePage implements OnInit {
         this.tipologie = uniq(strutture.map((s: Struttura) => s.tipologia)).sort();
         this.tipologieSelezionate = [...this.tipologie];
         this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.tipologieSelezionate });
+
+        const app = initializeApp(this.firebaseConfig);
+        // const messaging = getMessaging();
+        const messaging = getMessaging(app);
+        onMessage(messaging, (payload) => {
+            console.log('Message received. ', payload);
+            // ...
+        });
+
 
     }
 
