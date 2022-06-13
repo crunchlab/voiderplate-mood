@@ -1,0 +1,80 @@
+<ion-header class="about-header" *transloco="let t">
+    <ion-toolbar>
+        <ion-title>
+            <h4>{{t('about-title')}}</h4>
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-icon slot="icon-only" name="close-circle-outline" (click)="closeModal()"></ion-icon>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" [scrollY]="true" class="about-modal-content" *transloco="let t">
+    <ion-grid class="about-grid">
+        <ion-row class="logo-row">
+            <ion-col size="10" sizeSm="10" sizeMd="10" class="about-col colophon-container">
+                <img class="about-logo" src="assets/icon/favicon.png">
+
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col text-center size="10" sizeSm="10" sizeMd="10" class="about-col">
+                <h1 class="about-titolo">{{t('about.titolo')}}</h1>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col text-center size="10" sizeSm="10" sizeMd="10" class="about-col">
+                <h3 class="about-titolo-sezione">{{t('about.sottotitolo')}}</h3>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col text-center size="10" sizeSm="10" sizeMd="10" class="about-col">
+                <h3 class="about-titolo-sezione">{{t('about.metodologia')}}</h3>
+                <p>{{t('about.htmlMetodologia')}}</p>
+
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="credits-row">
+            <ion-col size="10" sizeSm="10" sizeMd="10" class="about-col credits-container">
+                <h3 class="about-titolo-sezione">{{t('about.credits')}}</h3>
+                <!-- <p class="about-credit">{{t("about.dataset")}} : <a
+                        href="https://dati.veneto.it/opendata/elenco_strutture_ricettive_del_veneto"
+                        target="_blank">{{t("about.dataseturl")}}</a></p> -->
+                <p class="about-credit">{{t("about.design")}} & {{t("about.development")}} : <a
+                        href="https://vo-id.it/index.php/progetto/open-data/" target="_blank">VOID Open Data</a> </p>
+
+                <p class="about-credit"> {{t("about.projectManagement")}} : <a href="https://www.vo-id.it"
+                        target="_blank">VOID</a>
+                </p>
+
+                <p class="about-credit"> {{t("about.contatti")}} : <a href="mailto:opendata@vo-id.it" target="_blank">opendata@vo-id.it</a>
+                </p>
+
+                <p class="about-credit about-social">
+                    <a href="https://github.com/crunchlab/voiderplate" target="_blank">
+                        <ion-icon name="logo-github"></ion-icon>
+                    </a>
+                    <a href="https://www.instagram.com/voidinnovationlab/" target="_blank">
+                        <ion-icon name="logo-instagram"></ion-icon>
+                    </a>
+                    <a href="https://www.linkedin.com/company/voidinnovationlab/" target="_blank">
+                        <ion-icon name="logo-linkedin"></ion-icon>
+                    </a>
+                    <a href="https://www.facebook.com/voidinnovationlab" target="_blank">
+                        <ion-icon name="logo-facebook"></ion-icon>
+                    </a>
+                </p>
+
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="colophon-row app-info-row">
+            <ion-col size="10" sizeSm="10" class="about-col colophon-container app-info-container">
+                <div class="about-version-number">VOIDerplate - v.{{version}}</div>
+            </ion-col>
+        </ion-row>
+
+    </ion-grid>
+</ion-content>

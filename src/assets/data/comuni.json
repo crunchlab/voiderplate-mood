@@ -1,0 +1,87 @@
+[
+    {
+        "name": "CAORLE",
+        "lat": 45.6030238,
+        "long": 12.8859589
+    },
+    {
+        "name": "JESOLO",
+        "lat": 45.5334198,
+        "long": 12.6438498
+    },
+    {
+        "name": "MUSILE DI PIAVE",
+        "lat": 45.6244348,
+        "long": 12.563901
+    },
+    {
+        "name": "SAN MICHELE AL TAGLIAMENTO",
+        "lat": 45.7054178,
+        "long": 13.0019979
+    },
+    {
+        "name": "SAN DONA' DI PIAVE",
+        "lat": 45.633333,
+        "long": 12.566667
+    },
+    {
+        "name": "ERACLEA",
+        "lat": 45.5808511,
+        "long": 12.6801548
+    },
+    {
+        "name": "CONCORDIA SAGITTARIA",
+        "lat": 45.7572285,
+        "long": 12.842294
+    },
+    {
+        "name": "PORTOGRUARO",
+        "lat": 45.7805759,
+        "long": 12.8373992
+    },
+    {
+        "name": "ANNONE VENETO",
+        "lat": 45.7957523,
+        "long": 12.6833548
+    },
+    {
+        "name": "FOSSALTA DI PIAVE",
+        "lat": 45.6467509,
+        "long": 12.513665
+    },
+    {
+        "name": "NOVENTA DI PIAVE",
+        "lat": 45.6604188,
+        "long": 12.5301585
+    },
+    {
+        "name": "SAN STINO DI LIVENZA",
+        "lat": 45.7297158,
+        "long": 12.6813746
+    },
+    {
+        "name": "MEOLO",
+        "lat": 45.6180406,
+        "long": 12.4538437
+    },
+    {
+        "name": "TORRE DI MOSTO",
+        "lat": 45.6877244,
+        "long": 12.7041963
+    },
+    {
+        "name": "CINTO CAOMAGGIORE",
+        "lat": 45.8248435,
+        "long": 12.7860829
+    },
+    {
+        "name": "PRAMAGGIORE",
+        "lat": 45.7998068,
+        "long": 12.7234046
+    },
+    {
+        "name": "CEGGIA",
+        "lat": 45.6890925,
+        "long": 12.639028
+    }
+]

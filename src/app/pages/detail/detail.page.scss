@@ -1,0 +1,47 @@
+.detail_services,
+.detail_contacts {
+    ion-col {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+}
+
+.detail_contacts {
+    ion-col {
+        background: var(--detail-contact-background, #ffce4f);
+        border: 2px solid white;
+        border-radius: 10px;
+        color: var(--detail-contact-font-color, #737373);
+    }
+    ion-icon {
+        background: var(--detail-contact-background, #ffce4f);
+        color: white;
+    }
+}
+.icon_container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    ion-icon {
+        width: 32px;
+        height: 32px;
+        align-self: center;
+    }
+    ion-label {
+        align-self: center;
+    }
+}
+
+.detail_lang_flag {
+    width: 32px;
+}
+
+.detail_address_section{
+    text-transform: capitalize;
+}
+
+.detail_insights{
+    text-transform: lowercase;
+}

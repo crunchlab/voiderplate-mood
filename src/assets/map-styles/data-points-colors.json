@@ -1,0 +1,24 @@
+{
+    "tipologia_1": {
+        "AFFITTACAMERE": "#d53e4f",
+        "AGRITURISMO": "#f46d43",
+        "ALBERGO": "#fdae61",
+        "ALTRA_RICETTIVITA": "#fee08b",
+        "APPARTAMENTO": "#ffffbf",
+        "BED_AND_BREAKFAST": "#e6f598",
+        "CAMPEGGIO": "#abdda4",
+        "COUNTRY_HOUSE": "#66c2a5",
+        "RESIDENCE": "#3288bd"
+    },
+    "tipologia": {
+        "AFFITTACAMERE": "#a6cee3",
+        "AGRITURISMO": "#1f78b4",
+        "ALBERGO": "#b2df8a",
+        "ALTRA_RICETTIVITA": "#33a02c",
+        "APPARTAMENTO": "#fb9a99",
+        "BED_AND_BREAKFAST": "#e31a1c",
+        "CAMPEGGIO": "#fdbf6f",
+        "COUNTRY_HOUSE": "#ff7f00",
+        "RESIDENCE": "#cab2d6"
+    }
+}

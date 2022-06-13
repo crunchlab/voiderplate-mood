@@ -1,0 +1,186 @@
+<ion-header *transloco="let t">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button mode="md"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+            <h4>{{t('detail.title')}}</h4>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *transloco="let t">
+    <ion-grid>
+        <ion-row class="detail_intestazione">
+            <ion-col>
+                <ion-row>
+                    <h3>{{struttura.denominazione | titlecase}}</h3>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        {{struttura.tipologia | titlecase}} - {{'rating' | transloco:{rating: struttura.nuovaClassificazioneLr11 } }}
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <div class="detail_address_section">
+                            {{struttura.indirizzo | titlecase}} {{struttura.numeroCivico}}
+                        </div>
+                        <div class="detail_address_section">
+                            {{struttura.comune | titlecase}}
+                        </div>
+                        <div class="detail_address_section">
+                            {{struttura.provincia | titlecase}}
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="detail_services_header" *ngIf="struttura.accoglienza['accessoDisabili'] 
+            || struttura.accoglienza['giochiBimbi'] 
+            || struttura.accoglienza['animaliAmmessi']">
+            <ion-col>
+                <h5>{{t('detail.accoglienza') | titlecase}}</h5>
+            </ion-col>
+        </ion-row>
+        <ion-row class="detail_services">
+            <ion-col *ngIf="struttura.accoglienza['accessoDisabili']" size="4">
+                <div class="icon_container">
+                    <ion-icon src="assets/icons/ISO_wheel_chair.svg"></ion-icon>
+                    <ion-label>{{t('detail.accessoDisabili')}}</ion-label>
+                </div>
+            </ion-col>
+            <ion-col *ngIf="struttura.accoglienza['giochiBimbi']" size="4">
+                <div class="icon_container">
+                    <ion-icon src="assets/icons/playground.svg"></ion-icon>
+                    <ion-label>{{t('detail.giochiBimbi')}}</ion-label>
+                </div>
+            </ion-col>
+            <ion-col *ngIf="struttura.accoglienza['animaliAmmessi']" size="4">
+                <div class="icon_container">
+                    <ion-icon src="assets/icons/pets.svg"></ion-icon>
+                    <ion-label>{{t('detail.animaliAmmessi')}}</ion-label>
+                </div>
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="detail_contacts_header"
+            *ngIf="struttura.contatti['www'] || struttura.contatti['email'] || struttura.contatti['telefono']">
+            <ion-col>
+                <h5>{{t('detail.contatti') | titlecase }}</h5>
+            </ion-col>
+        </ion-row>
+        <ion-row class="detail_contacts">
+            <ion-col size="4" (click)="goToSite()" *ngIf="struttura.contatti['www']">
+                <div class="icon_container">
+                    <ion-icon name="globe-outline"></ion-icon>
+                    <ion-label>{{t('detail.web')}}</ion-label>
+                </div>
+            </ion-col>
+            <ion-col size="4" (click)="writeTo()" *ngIf="struttura.contatti['email']">
+                <div class="icon_container">
+                    <ion-icon name="at-outline"></ion-icon>
+                    <ion-label>{{t('detail.mail')}}</ion-label>
+                </div>
+            </ion-col>
+            <ion-col size="4" (click)="phoneTo()" *ngIf="struttura.contatti['telefono']">
+                <div class="icon_container">
+                    <ion-icon name="call-outline"></ion-icon>
+                    <ion-label>{{t('detail.phone')}}</ion-label>
+                </div>
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="detail_insights_header">
+            <ion-col>
+                <h5>{{t('detail.dettagli') | titlecase}}</h5>
+            </ion-col>
+        </ion-row>
+        <ion-row class="detail_insights">
+            <ion-col>
+                <ion-row>
+                    <ion-col>{{t('detail.tipologia')}}</ion-col>
+                    <ion-col>{{struttura.tipologia}}</ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col>{{t('detail.classificazione')}}</ion-col>
+                    <ion-col>{{'rating' | transloco:{rating: struttura.nuovaClassificazioneLr11 } }}</ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.aperto')}}</ion-col>
+                    <ion-col>{{!struttura.chiusuraTemporanea | boolToWord}}</ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.accessoDisabili')}}</ion-col>
+                    <ion-col>{{struttura.accessoDisabili | boolToWord}}</ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.giochiBimbi')}}</ion-col>
+                    <ion-col>{{struttura.giochiBimbi | boolToWord}}</ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.animaliAmmessi')}}</ion-col>
+                    <ion-col>{{struttura.animaliAmmessi | boolToWord}}</ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.posizione')}}</ion-col>
+                    <ion-col>
+                        <ion-row>
+                            <ion-col *ngFor="let item of struttura.posizione | keyvalue | filterkeyvalue" size="12">
+                                <span *ngIf="item.value">{{item.key}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.trasporti')}}</ion-col>
+                    <ion-col>
+                        <ion-row>
+                            <ion-col *ngFor="let item of struttura.trasporti | keyvalue | filterkeyvalue" size="12">
+                                <span *ngIf="item.value">{{item.key}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.servizi')}}</ion-col>
+                    <ion-col>
+                        <ion-row>
+                            <ion-col *ngFor="let item of struttura.servizi | keyvalue | filterkeyvalue" size="12">
+                                <span>{{t(item.key)}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.wellness')}}</ion-col>
+                    <ion-col>
+                        <ion-row>
+                            <ion-col *ngFor="let item of struttura.wellness | keyvalue | filterkeyvalue" size="12">
+                                <span>{{item.key}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.lingue')}}</ion-col>
+                    <ion-col>
+                        <ion-row>
+                            <ion-col *ngFor="let item of struttura.lingue | keyvalue | filterkeyvalue" size="3">
+                                <span>
+                                    <ion-icon class="detail_lang_flag" [src]="item.key | langtoflag"></ion-icon>
+                                </span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>{{t('detail.dataUltimaModifica')}}</ion-col>
+                    <ion-col>{{struttura.dataUltimaModifica}}</ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

@@ -1,0 +1,160 @@
+@import "../../../theme/scrollbar-width-mixin.scss";
+@import "../../../theme/filter_chips.scss";
+
+#container {
+    text-align: center;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+#mapContainer {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#container strong {
+    font-size: 20px;
+    line-height: 26px;
+}
+
+#container p {
+    font-size: 16px;
+    line-height: 22px;
+
+    color: #8c8c8c;
+
+    margin: 0;
+}
+
+#container a {
+    text-decoration: none;
+}
+
+mgl-map,
+.maplibregl-canvas {
+    height: 100%;
+    width: 100%;
+}
+.maplibregl-canvas-container {
+    height: 100%;
+}
+.horizontal_scroll_flex {
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    @include hideScrollbar();
+}
+
+.swiper {
+    height: 0;
+    &.visible_slides {
+        height: 25vh;
+    }
+    top: 75vh;
+    ::ng-deep .swiper-slide {
+        background-color: white;
+        border-radius: 14px;
+        color: var(--ionic-primary, black);
+    }
+}
+
+.search_container {
+    z-index: 100;
+    position: absolute;
+    margin: auto;
+    width: 100vw;
+}
+
+.top-search-tools {
+    width: 100%;
+    display: flex;
+}
+#user_locator {
+    margin: auto 15px auto auto;
+    aspect-ratio: 1;
+}
+.search-comuni-select {
+    background: white;
+    padding-left: 24px !important;
+    padding-right: 12px !important;
+    width: 95%;
+    max-width: calc(66vw);
+    border-radius: 0 0 20px 20px;
+
+    ::ng-deep .ng-select-container {
+        // min-height: unset !important;
+        // background: white;
+        // height: 36px;
+        // border-radius: 18px;
+
+        ::ng-deep .ng-value {
+            margin-top: 10px;
+        }
+
+        ::ng-deep .ng-value-container {
+            // align-self: flex-end;
+            // margin-top: 10px;
+            // margin-left: 17px;
+
+            ::ng-deep .ng-placeholder {
+                // position: unset;
+                margin-top: 10px;
+            }
+        }
+
+        .ng-arrow-wrapper {
+            visibility: hidden;
+        }
+    }
+
+    &.ng-select-opened {
+        .ng-select-container {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            z-index: 2000;
+
+            .ng-placeholder {
+                display: none;
+            }
+        }
+    }
+
+    .ng-has-value {
+        .ng-placeholder {
+            display: none;
+        }
+    }
+
+    .ng-dropdown-panel {
+        margin-left: 24px;
+        // padding-right: 12px;
+        width: calc(100% - 36px);
+        border-top-left-radius: 18px;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 18px;
+        margin-bottom: 12px;
+
+        // .scroll-host {
+        //     @include hideScrollbar();
+        // }
+    }
+}
+
+.advanced_seach_icon {
+    margin: auto;
+}
+
+.about_btn_container {
+    position: absolute;
+    right: 0;
+    top: calc(100vh - 48px);
+    margin-right: 17px;
+}
