@@ -10,7 +10,16 @@ export const environment = {
     filtersFieldMappings: filtersFieldMappings,
     mapStyle: './assets/map-styles/roadmap-style.json',
     dataPointColorMap: './assets/map-styles/data-points-colors.json',
-    version: "1.0.0-beta"
+    version: "1.0.0-beta",
+    firebaseConfig : {
+        apiKey: "AIzaSyBrrHj-LuFs9IvKsNoHIq5a7-jJWK95QBk",
+        authDomain: "moodmetervoid.firebaseapp.com",
+        databaseURL: "https://moodmetervoid-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "moodmetervoid",
+        storageBucket: "moodmetervoid.appspot.com",
+        messagingSenderId: "45331867927",
+        appId: "1:45331867927:web:cd34e172e861e40daf6f52"
+    }
     // mapStyle: './assets/map-styles/dark-style.json'
 
 };

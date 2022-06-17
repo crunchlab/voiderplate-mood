@@ -20,7 +20,7 @@ import { FeatureToStrutturaService } from '../../services/transformer/feature-to
 import comuni from '../../../assets/data/comuni.json';
 import { AboutPage } from '../about/about.page';
 
-import { getMessaging, onMessage } from "firebase/messaging";
+import { getDatabase, onValue, ref } from "firebase/database";
 
 
 
@@ -170,13 +170,15 @@ export class HomePage implements OnInit {
         this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.tipologieSelezionate });
 
         const app = initializeApp(this.firebaseConfig);
-        // const messaging = getMessaging();
-        const messaging = getMessaging(app);
-        onMessage(messaging, (payload) => {
-            console.log('Message received. ', payload);
-            // ...
+        
+        // Initialize Realtime Database and get a reference to the service
+        const db = getDatabase(app);
+       
+        const starCountRef = ref(db, '/');
+        onValue(starCountRef, (snapshot) => {
+            const data = snapshot.val();
+           console.log(data)
         });
-
 
     }
 
