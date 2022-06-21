@@ -15,8 +15,8 @@ import { AdvancedSearchPage } from '../advanced-search/advanced-search.page';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
 import distance from '@turf/distance';
 import struttureGeoJson from '../../../assets/data/strutture.json';
-import { Struttura } from '../../models/struttura/struttura';
-import { FeatureToStrutturaService } from '../../services/transformer/feature-to-struttura.service';
+import { Struttura as MoodMeter } from '../../models/struttura/struttura';
+import { FeatureToMeterService } from '../../services/transformer/feature-to-meter.service';
 import comuni from '../../../assets/data/comuni.json';
 import { AboutPage } from '../about/about.page';
 
@@ -25,6 +25,8 @@ import { getDatabase, onValue, ref } from "firebase/database";
 
 
 import { initializeApp } from "firebase/app";
+import _ from 'lodash';
+import { Moodmeter } from 'src/app/models/moodmeter/moodmeter';
 
 SwiperCore.use([Virtual]);
 @Component({
@@ -42,14 +44,14 @@ export class HomePage implements OnInit {
     public homeMap: maplibregl.Map;
     public selectedFeature: any = { lngLat: [0, 0] };
     public mapStyle = environment.mapStyle;
-    public struttureGeoJson: FeatureCollection = (struttureGeoJson as FeatureCollection);
+    public metersGeoJson: FeatureCollection = (struttureGeoJson as FeatureCollection);
     public comuneSelezionato: string = "";
 
-    public strutture: Struttura[] = [];
+    public strutture: Moodmeter[] = [];
     public comuni: string[] = [];
-    public tipologie: string[] = [];
+    public moods: string[] = [];
     public slidesVisible: boolean = false;
-    public tipologieSelezionate: string[] = [];
+    public moodSelezionati: string[] = [];
     private marker: maplibregl.Marker;
 
     firebaseConfig = {
@@ -155,7 +157,7 @@ export class HomePage implements OnInit {
         ]
     };
 
-    constructor(private featureTransformer: FeatureToStrutturaService, private filterService: FilterServiceProvider, private mapUtils: MapUtilsService, public modalController: ModalController) {
+    constructor(private featureTransformer: FeatureToMeterService, private filterService: FilterServiceProvider, private mapUtils: MapUtilsService, public modalController: ModalController) {
     }
 
 
@@ -163,21 +165,61 @@ export class HomePage implements OnInit {
         this.openAboutModal();
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
-        let strutture = this.struttureGeoJson.features.map(feature => this.featureTransformer.featureToStruttura(feature as Feature));
-        this.comuni = uniq(strutture.map((s: Struttura) => s.comune)).sort();
-        this.tipologie = uniq(strutture.map((s: Struttura) => s.tipologia)).sort();
-        this.tipologieSelezionate = [...this.tipologie];
-        this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.tipologieSelezionate });
+        let meters = this.metersGeoJson.features.map(feature => this.featureTransformer.featureToMeter(feature as Feature));
+
+        this.moods = uniq(meters.map((m: Moodmeter) => `${m.mood}`)).sort();
+        this.moodSelezionati = [...this.moods];
+        this.filterService.addFilter({ property: 'mood', operator: FilterOperator.eq, value: this.moodSelezionati });
 
         const app = initializeApp(this.firebaseConfig);
-        
+
         // Initialize Realtime Database and get a reference to the service
         const db = getDatabase(app);
-       
+
         const starCountRef = ref(db, '/');
         onValue(starCountRef, (snapshot) => {
             const data = snapshot.val();
-           console.log(data)
+            console.log(data);
+            let specimen: any = {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                12.5990424,
+                                45.6473375
+                            ]
+                        },
+                        "properties": {
+                            "nome": "",
+                            "mood": ""
+                        }
+                    },
+                ]
+            };
+            this.metersGeoJson = specimen;
+            let parsed = _.chain(data)
+                .map((d, k) => {
+                    return {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                d.lon,
+                                d.lat
+                            ]
+                        },
+                        "properties": {
+                            "nome": k,
+                            "mood": d.mood
+                        }
+                    }
+                })
+                .value();
+
+            console.dir(parsed);
         });
 
     }
@@ -222,7 +264,7 @@ export class HomePage implements OnInit {
         });
 
         event.resize();
-        let filterCoordinates: LngLatLike[] = this.struttureGeoJson.features.map(f => (f.geometry as any).coordinates);
+        let filterCoordinates: LngLatLike[] = this.metersGeoJson.features.map(f => (f.geometry as any).coordinates);
         this.fitResultsBBox(filterCoordinates);
     }
 
@@ -251,22 +293,22 @@ export class HomePage implements OnInit {
                 // return distance(f1.geometry.coordinates, f2.geometry.coordinates);
             })
         let filteredFeatures = this.filterService.applyFilters(renderedFeatures, "properties");
-        let filterdIds: number[] = filteredFeatures.map(f => f.codiceIdentificativo);
+        let filterdIds: number[] = filteredFeatures.map(f => f.nome);
 
         renderedFeatures.map(f => {
-            let isMatch = filterdIds.includes(f.properties.codiceIdentificativo);
-            this.homeMap.setFeatureState({ source: 'strutture', id: f.properties.codiceIdentificativo }, { "isMatch": isMatch });
+            let isMatch = filterdIds.includes(f.properties.nome);
+            this.homeMap.setFeatureState({ source: 'strutture', id: f.properties.nome }, { "isMatch": isMatch });
         });
         if (this.homeMap.getZoom() > 10) {
             this.strutture = filteredFeatures
-                .map((feature: Feature) => this.featureTransformer.featureToStruttura(feature));
+                .map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
 
             this.swiperStrutture.swiperRef.virtual.removeAllSlides();
             this.swiperStrutture.swiperRef.updateSlides();
             this.swiperStrutture.swiperRef.virtual.update(true);
             if (this.strutture.length) {
                 this.swiperStrutture.swiperRef.slideTo(0);
-                let coordinates: LngLatLike = (renderedFeatures.find(f => f.properties.codiceIdentificativo == this.strutture[0].codiceIdentificativo).geometry as any).coordinates;
+                let coordinates: LngLatLike = (renderedFeatures.find(f => f.properties.nome == this.strutture[0].nome).geometry as any).coordinates;
                 this.setMarker(this.strutture[0], coordinates);
 
             }
@@ -289,7 +331,7 @@ export class HomePage implements OnInit {
     }
 
     private handleLayerClick(clickedFeature: Feature<Geometry, { [name: string]: any; }>) {
-        let slideIdx = this.strutture.findIndex(s => s.codiceIdentificativo === clickedFeature.id);
+        let slideIdx = this.strutture.findIndex(s => s.nome === clickedFeature.id);
         this.setMarker(this.strutture[slideIdx], (clickedFeature.geometry as any).coordinates);
 
         this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
@@ -319,15 +361,15 @@ export class HomePage implements OnInit {
     }
 
     public onChipClick(tipologia: string) {
-        if (this.tipologieSelezionate.includes(tipologia)) {
-            remove(this.tipologieSelezionate, t => t == tipologia);
-            if (!this.tipologieSelezionate.length) {
-                this.tipologieSelezionate = [...this.tipologie];
+        if (this.moodSelezionati.includes(tipologia)) {
+            remove(this.moodSelezionati, t => t == tipologia);
+            if (!this.moodSelezionati.length) {
+                this.moodSelezionati = [...this.moods];
             }
         } else {
-            this.tipologieSelezionate.push(tipologia);
+            this.moodSelezionati.push(tipologia);
         }
-        this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.tipologieSelezionate });
+        this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.moodSelezionati });
         this.refreshSlides();
     }
 
@@ -364,19 +406,19 @@ export class HomePage implements OnInit {
     public onSlideChange(event: any) {
         let index = event.activeIndex;
         let struttura = this.strutture[index];
-        let geojsonPoint = this.struttureGeoJson.features.find(f => f.properties.codiceIdentificativo == struttura.codiceIdentificativo);
+        let geojsonPoint = this.metersGeoJson.features.find(f => f.properties.nome == struttura.nome);
         const coordinates = get(geojsonPoint, 'geometry.coordinates', []).slice();
         this.setMarker(struttura, coordinates);
         this.homeMap.panTo(coordinates, { duration: 250 });
     }
 
 
-    private setMarker(struttura: Struttura, coordinates: any) {
+    private setMarker(meter: Moodmeter, coordinates: any) {
         if (this.marker) {
             this.marker.remove();
         }
         this.marker = this.createMarker();
-        let color: string = get(COLOR_MAP, `tipologia[${struttura.tipologia.replaceAll(' ', '_').toUpperCase()}]`, COLOR_MAP.tipologia.ALTRA_RICETTIVITA);
+        let color: string = get(COLOR_MAP, `mood[${meter.mood}]`, COLOR_MAP.tipologia.ALTRA_RICETTIVITA);
         this.marker.getElement()
             .querySelector('svg g:nth-child(2)')
             .setAttribute("fill", color);

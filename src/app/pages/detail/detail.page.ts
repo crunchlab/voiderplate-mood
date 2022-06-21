@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Moodmeter } from 'src/app/models/Moodmeter/Moodmeter';
 import { Struttura } from '../../models/struttura/struttura';
-import { StrutturaService } from '../../services/api/struttura.service';
+import { MoodmeterService } from '../../services/api/moodmeter.service';
 
 @Component({
     selector: 'app-detail',
@@ -9,9 +10,9 @@ import { StrutturaService } from '../../services/api/struttura.service';
     styleUrls: ['./detail.page.scss'],
 })
 export class DetailPage implements OnInit {
-    struttura: Struttura;
+    struttura: Moodmeter;
 
-    constructor(private strutturaService: StrutturaService, private actRoute: ActivatedRoute) {
+    constructor(private strutturaService: MoodmeterService, private actRoute: ActivatedRoute) {
 
     }
 
@@ -22,23 +23,12 @@ export class DetailPage implements OnInit {
         });
     }
     goToSite() {
-        let site: string = this.struttura.contatti["www"];
-        let url: URL;
-        try {
-            if (site.match(/http[s]?:/)) {
-                url = new URL(site);
-            } else {
-                url = new URL(`http://${site}`);
-            }
-            window.open(url, '_blank');
-        } catch (e) {
-            alert("indirizzo non valido!")
-        }
+     
     }
     writeTo() {
-        window.open(`mailto:${this.struttura.contatti["mail"]}`, '_blank');
+        
     }
     phoneTo() {
-        window.open(`tel:${this.struttura.contatti["telefono"]}`, '_se_blanklf');
+       
     }
 }

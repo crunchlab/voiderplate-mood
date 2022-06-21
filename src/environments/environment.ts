@@ -1,5 +1,5 @@
 import filtersFieldMappings from "../mappings/filtersFieldMappings";
-import featureToStrutturaMappings from "../mappings/featureToStrutturaMappings";
+import featureToMeterMappings from "../mappings/featureToStrutturaMappings";
 import version from "../assets/version.json";
 
 // This file can be replaced during build by using the `fileReplacements` array.
@@ -7,7 +7,7 @@ import version from "../assets/version.json";
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
     production: false,
-    fieldMappings: featureToStrutturaMappings,
+    fieldMappings: featureToMeterMappings,
     filtersFieldMappings: filtersFieldMappings,
     mapStyle: './assets/map-styles/roadmap-style.json',
     dataPointColorMap: './assets/map-styles/data-points-colors.json',

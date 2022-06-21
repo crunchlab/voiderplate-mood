@@ -4,14 +4,14 @@ import { FilterOperator } from '../../enums/filterOperator.enum';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
 import { FieldMapping } from '../../interfaces/fieldMapping.interface';
 
-import { StrutturaService } from './struttura.service';
+import { MoodmeterService } from './moodmeter.service';
 
 describe('StrutturaService', () => {
-  let service: StrutturaService;
+    let service: MoodmeterService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(StrutturaService);
+      service = TestBed.inject(MoodmeterService);
   });
 
   it('should be created', () => {
