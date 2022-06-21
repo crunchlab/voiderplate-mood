@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Moodmeter } from '../../models/Moodmeter/Moodmeter';
 import { find, flatten, get, pick, uniq } from 'lodash';
 import { FeatureToMeterService } from '../transformer/feature-to-meter.service';
-import strutture from '../../../assets/data/strutture.json';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
 import { FieldMapping } from '../../interfaces/fieldMapping.interface';
 import { FilterOperator } from '../../enums/filterOperator.enum';
@@ -16,7 +15,7 @@ export class MoodmeterService {
 
 
     constructor(private transformer: FeatureToMeterService) {
-        this.strutture = strutture.features.map((f: any) => this.transformer.featureToMeter(f));
+        this.strutture = [];
     }
 
 

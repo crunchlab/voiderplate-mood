@@ -14,8 +14,6 @@ import { ModalController } from '@ionic/angular';
 import { AdvancedSearchPage } from '../advanced-search/advanced-search.page';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
 import distance from '@turf/distance';
-import struttureGeoJson from '../../../assets/data/strutture.json';
-import { Struttura as MoodMeter } from '../../models/struttura/struttura';
 import { FeatureToMeterService } from '../../services/transformer/feature-to-meter.service';
 import comuni from '../../../assets/data/comuni.json';
 import { AboutPage } from '../about/about.page';
@@ -44,7 +42,10 @@ export class HomePage implements OnInit {
     public homeMap: maplibregl.Map;
     public selectedFeature: any = { lngLat: [0, 0] };
     public mapStyle = environment.mapStyle;
-    public metersGeoJson: FeatureCollection = (struttureGeoJson as FeatureCollection);
+    public metersGeoJson: FeatureCollection = {
+        "type": "FeatureCollection",
+        "features": []
+    };
     public comuneSelezionato: string = "";
 
     public strutture: Moodmeter[] = [];
@@ -148,56 +149,8 @@ export class HomePage implements OnInit {
         this.moodSelezionati = [...this.moods];
         this.filterService.addFilter({ property: 'mood', operator: FilterOperator.eq, value: this.moodSelezionati });
 
-        const app = initializeApp(this.firebaseConfig);
 
-        // Initialize Realtime Database and get a reference to the service
-        const db = getDatabase(app);
 
-        const starCountRef = ref(db, '/');
-        onValue(starCountRef, (snapshot) => {
-            const data = snapshot.val();
-            console.log(data);
-            let specimen: any = {
-                "type": "FeatureCollection",
-                "features": [
-                    {
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [
-                                12.5990424,
-                                45.6473375
-                            ]
-                        },
-                        "properties": {
-                            "nome": "",
-                            "mood": ""
-                        }
-                    },
-                ]
-            };
-            this.metersGeoJson = specimen;
-            let parsed = _.chain(data)
-                .map((d, k) => {
-                    return {
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [
-                                d.lon,
-                                d.lat
-                            ]
-                        },
-                        "properties": {
-                            "nome": k,
-                            "mood": d.mood
-                        }
-                    }
-                })
-                .value();
-
-            console.dir(parsed);
-        });
 
     }
 
@@ -210,6 +163,40 @@ export class HomePage implements OnInit {
 
     public mapLoaded(event: any) {
         this.homeMap = event;
+
+
+        const app = initializeApp(this.firebaseConfig);
+
+        // Initialize Realtime Database and get a reference to the service
+        const db = getDatabase(app);
+        const starCountRef = ref(db, '/');
+        onValue(starCountRef, (snapshot) => {
+            const data = snapshot.val();
+            console.log(data);
+         
+            this.metersGeoJson.features = _.chain(data)
+                .map((d, k) => {
+                    let feat: Feature = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                d.lon,
+                                d.lat
+                            ]
+                        },
+                        "properties": {
+                            "nome": k,
+                            "mood": d.mood+""
+                        }
+                    };
+                    return feat;
+                })
+                .value();
+            
+            this.metersGeoJson = { ...this.metersGeoJson };
+            
+        });
 
         this.homeMap.on('mouseenter', 'strutture-layer', () => {
             this.homeMap.getCanvas().style.cursor = 'pointer';
@@ -241,8 +228,8 @@ export class HomePage implements OnInit {
         });
 
         event.resize();
-        let filterCoordinates: LngLatLike[] = this.metersGeoJson.features.map(f => (f.geometry as any).coordinates);
-        this.fitResultsBBox(filterCoordinates);
+        // let filterCoordinates: LngLatLike[] = this.metersGeoJson.features.map(f => (f.geometry as any).coordinates);
+        // this.fitResultsBBox(filterCoordinates);
     }
 
 
@@ -260,6 +247,7 @@ export class HomePage implements OnInit {
         }
     }
     private refreshSlides() {
+        return ;
         let mapCenter = [this.homeMap.getCenter().lng, this.homeMap.getCenter().lat];
         let renderedFeatures: maplibregl.MapboxGeoJSONFeature[] = this.homeMap
             .queryRenderedFeatures(null, { "layers": ["strutture-layer"] })
