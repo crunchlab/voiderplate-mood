@@ -76,14 +76,14 @@ export class HomePage implements OnInit {
         },
         'circle-color': [
             'case',
-            ['all',  ['==', ['get', 'mood'], "0"]],
-            COLOR_MAP.mood["0"],
             ['all',  ['==', ['get', 'mood'], "1"]],
             COLOR_MAP.mood["1"],
             ['all',  ['==', ['get', 'mood'], "2"]],
             COLOR_MAP.mood["2"],
+            ['all',  ['==', ['get', 'mood'], "3"]],
+            COLOR_MAP.mood["3"],
 
-            COLOR_MAP.mood["3"]
+            COLOR_MAP.mood["4"]
         ],
         'circle-stroke-color': 'transparent',
         'circle-stroke-width': 1,
@@ -124,13 +124,13 @@ export class HomePage implements OnInit {
         ],
         "text-color": [
             'case',
-            ['all',  ['==', ['get', 'mood'], "0"]],
-            COLOR_MAP.mood["0"],
             ['all',  ['==', ['get', 'mood'], "1"]],
             COLOR_MAP.mood["1"],
             ['all',  ['==', ['get', 'mood'], "2"]],
             COLOR_MAP.mood["2"],
-            COLOR_MAP.mood["3"]
+            ['all',  ['==', ['get', 'mood'], "3"]],
+            COLOR_MAP.mood["3"],
+            COLOR_MAP.mood["4"]
         ]
     };
 
