@@ -13,8 +13,8 @@
     "target": "es2015",
     "module": "es2020",
     "lib": ["es2021", "dom"],
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true
   },
   "angularCompilerOptions": {

@@ -1,6 +1,6 @@
 import filtersFieldMappings from "../mappings/filtersFieldMappings";
 import featureToStrutturaMappings from "../mappings/featureToStrutturaMappings";
-import { FullSemVer } from "../assets/version.json";
+import version from "../assets/version.json";
 
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
@@ -11,7 +11,7 @@ export const environment = {
     filtersFieldMappings: filtersFieldMappings,
     mapStyle: './assets/map-styles/roadmap-style.json',
     dataPointColorMap: './assets/map-styles/data-points-colors.json',
-    version: FullSemVer,
+    version: version.FullSemVer,
     firebaseConfig : {
         apiKey: "AIzaSyBrrHj-LuFs9IvKsNoHIq5a7-jJWK95QBk",
         authDomain: "moodmetervoid.firebaseapp.com",
