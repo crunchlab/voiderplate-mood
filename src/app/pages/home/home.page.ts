@@ -76,11 +76,11 @@ export class HomePage implements OnInit {
         },
         'circle-color': [
             'case',
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "0"]],
+            ['all',  ['==', ['get', 'mood'], "0"]],
             COLOR_MAP.mood["0"],
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "1"]],
+            ['all',  ['==', ['get', 'mood'], "1"]],
             COLOR_MAP.mood["1"],
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "2"]],
+            ['all',  ['==', ['get', 'mood'], "2"]],
             COLOR_MAP.mood["2"],
 
             COLOR_MAP.mood["3"]
@@ -118,17 +118,17 @@ export class HomePage implements OnInit {
 
         "text-opacity": [
             'case',
-            ['boolean', ['feature-state', 'isMatch'], true],
+            
             1,
             0
         ],
         "text-color": [
             'case',
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "0"]],
+            ['all',  ['==', ['get', 'mood'], "0"]],
             COLOR_MAP.mood["0"],
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "1"]],
+            ['all',  ['==', ['get', 'mood'], "1"]],
             COLOR_MAP.mood["1"],
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "2"]],
+            ['all',  ['==', ['get', 'mood'], "2"]],
             COLOR_MAP.mood["2"],
             COLOR_MAP.mood["3"]
         ]
