@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import * as maplibregl from 'maplibre-gl';
-import { get, isNil, remove, uniq } from 'lodash';
+import { get, isNil, uniq } from 'lodash';
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import SwiperCore, { Virtual } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
@@ -13,7 +13,6 @@ import { LngLatLike, MapboxEvent } from 'maplibre-gl';
 import { ModalController } from '@ionic/angular';
 import { AdvancedSearchPage } from '../advanced-search/advanced-search.page';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
-import distance from '@turf/distance';
 import { FeatureToMeterService } from '../../services/transformer/feature-to-meter.service';
 import comuni from '../../../assets/data/comuni.json';
 import { AboutPage } from '../about/about.page';
@@ -98,21 +97,21 @@ export class HomePage implements OnInit {
     public struttureLabelLayout: maplibregl.SymbolLayout =
         {
             "visibility": "visible",
-            "text-field": ["get", "denominazione"
+            "text-field": ["get", "nome"
             ],
             "text-font": [
                 "Open Sans Semibold",
                 "Arial Unicode MS Bold"
             ],
             "text-offset": [
-                0,
+                0.5,
                 0.5
             ],
             "text-anchor": "top",
             "text-size": [
                 'interpolate', ['linear'], ['zoom'],
-                10, 10,
-                30, 24
+                10, 12,
+                30, 30
             ]
         };
     public labelPaint: maplibregl.SymbolPaint = {
@@ -172,7 +171,7 @@ export class HomePage implements OnInit {
         const starCountRef = ref(db, '/');
         onValue(starCountRef, (snapshot) => {
             const data = snapshot.val();
-            console.log(data);
+            // console.log(data);
          
             this.metersGeoJson.features = _.chain(data)
                 .map((d, k) => {
@@ -199,7 +198,7 @@ export class HomePage implements OnInit {
                 .value();
             
             this.metersGeoJson = { ...this.metersGeoJson };
-
+            console.dir(this.metersGeoJson.features);
             this.meters = this.metersGeoJson.features.map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
             
         });
