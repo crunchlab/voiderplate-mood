@@ -197,7 +197,7 @@ export class HomePage implements OnInit {
                 .value();
             
             this.metersGeoJson = { ...clone };
-            console.dir(clone);
+            // console.dir(clone);
             // (this.homeMap.getSource('strutture') as any).setData(clone);
             this.meters = this.metersGeoJson.features.map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
             
