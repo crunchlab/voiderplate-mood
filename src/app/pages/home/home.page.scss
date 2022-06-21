@@ -45,11 +45,12 @@ mgl-map,
     height: 100%;
 }
 .horizontal_scroll_flex {
-    width: 100vw;
+    width: 80vw;
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
     overflow-x: scroll;
+    margin: auto;
     @include hideScrollbar();
 }
 

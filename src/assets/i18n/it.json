@@ -52,14 +52,10 @@
     "3": "3",
     "4": "4",
     "5": "5",
-
     "NA": "-",
-    "1_rating": "1 {{rating}}",
-    "2_rating": "2 {{rating}}",
-    "3_rating": "3 {{rating}}",
-    "4_rating": "4 {{rating}}",
-    "5_rating": "5 {{rating}}",
-    "rating": "{rating, plural, one {# stella} other {# stelle}}",
+    "mood_0": "Triste",
+    "mood_1": "Neutro",
+    "mood_2": "Felice",
     "posizione": "posizione",
     "centroStorico": "centro",
     "collinare": "collina",
@@ -78,8 +74,8 @@
     "giochiBimbi": "area giochi",
     "about-title": "Disclaimer",
     "about": {
-        "titolo": "VOIDERPLATE: l'app template del Veneto Orientale Innovation District",
-        "sottotitolo": "VOIDerplate è un template riutilizzabile per creare applicazioni basate su dati geolocalizzati ed è rilasciata come Software Libero: può essere quindi liberamente riutilizzata, migliorata e completata grazie al contributo della comunità di utenti. L'APP è stata concepita per essere continuamente 'in divenire', per essere adatta per l'utilizzo nell'ambito di laboratori didattici, e per essere interfacciata con sistemi di geolocalizzazione/navigazione e diverse tipologie di dati che possono essere visualizzati all'interno di una mappa. Per feedback, richieste e commenti scrivi alla mail che trovi in calce a questo disclaimer.",
+        "titolo": "VOID Moodmeter app: l'app per monitorare il Mood del VOID",
+        "sottotitolo": "VOID Moodmeter app è un prototipo di applicazione basata sui dati emessi dal Moodmeter. L'APP è stata concepita per essere continuamente 'in divenire', per essere adatta per l'utilizzo nell'ambito di laboratori didattici, e per essere interfacciata con sistemi di geolocalizzazione/navigazione e diverse tipologie di dati che possono essere visualizzati all'interno di una mappa. Per feedback, richieste e commenti scrivi alla mail che trovi in calce a questo disclaimer.",
         "metodologia": "Veneto Orientale Innovation Discrict",
         "htmlMetodologia": "Veneto Orientale Innovation District è un progetto promosso da 17 Comuni del Veneto Orientale e finanziato da Regione Veneto. Si occupa di Open Data, Open Innovation, Co-progettazione, Prototipazione, Building Information Modeling e Formazione.",
         "credits": "Credits",
@@ -88,7 +84,7 @@
         "projectManagement": "Coordinamento",
         "code": "Codice sorgente",
         "dataset": "Dati",
-        "dataseturl":"Open Data Veneto",
-        "contatti":"Contatti"
+        "dataseturl": "Open Data Veneto",
+        "contatti": "Contatti"
     }
 }

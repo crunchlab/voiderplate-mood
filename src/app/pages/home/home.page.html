@@ -9,24 +9,24 @@
                     [placeholder]="'home.comune'|transloco" [typeToSearchText]="" [(ngModel)]="comuneSelezionato">
 
                 </ng-select> -->
+                <div #tipologieFilter class="horizontal_scroll_flex">
+                    <ion-chip mode="md" class="filter_chip chip_selected" (click)="onChipClick(meter)"
+                        [attr.data-filterPropertyValue]="meter.mood"
+                        [attr.data-mood]="meter.mood"
+                        data-filterPropertyName="mood"
+                        *ngFor="let meter of meters">
+                        <ion-label>{{meter.nome}}</ion-label>
+                        <ion-icon name="ellipse" color="dark"></ion-icon>
+                    </ion-chip>
+                    <!-- <a [routerLink]="['/','advanced-search']"> -->
+                    <!-- <ion-chip mode="md" class="filter_chip advanced_search" (click)="openSearchModal()">
+                        <ion-icon class="advanced_seach_icon" name="ellipsis-horizontal-outline"></ion-icon>
+                    </ion-chip> -->
+                    <!-- </a> -->
+                </div>
                 <ion-fab-button (click)="onUserLocationClick()" id="user_locator">
                     <ion-icon name="locate-outline"></ion-icon>
                 </ion-fab-button>
-            </div>
-            <div #tipologieFilter class="horizontal_scroll_flex">
-                <ion-chip mode="md" class="filter_chip chip_selected" (click)="onChipClick(meter)"
-                    [attr.data-filterPropertyValue]="meter.mood"
-                    [attr.data-mood]="meter.mood"
-                    data-filterPropertyName="mood"
-                    *ngFor="let meter of meters">
-                    <ion-icon name="ellipse" color="dark"></ion-icon>
-                    <ion-label>{{meter.nome}}</ion-label>
-                </ion-chip>
-                <!-- <a [routerLink]="['/','advanced-search']"> -->
-                <!-- <ion-chip mode="md" class="filter_chip advanced_search" (click)="openSearchModal()">
-                    <ion-icon class="advanced_seach_icon" name="ellipsis-horizontal-outline"></ion-icon>
-                </ion-chip> -->
-                <!-- </a> -->
             </div>
         </div>
         <div #mapContainer id="mapContainer">
@@ -58,10 +58,7 @@
                         </a> -->
                         <ion-row class="ion-no-margin">
                             <ion-col class="ion-no-margin">
-                                
-                                <div class="struttura_slide_tipologia">{{'mood' |
-                                transloco:{mood: meter.mood } |
-                                titlecase}}</div>
+                                <div class="struttura_slide_tipologia">{{'mood_'+meter.mood | transloco | titlecase}}</div>
                             </ion-col>
                         </ion-row>
                        
