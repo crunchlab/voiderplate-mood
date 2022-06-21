@@ -48,7 +48,7 @@ export class HomePage implements OnInit {
     };
     public comuneSelezionato: string = "";
 
-    public strutture: Moodmeter[] = [];
+    public meters: Moodmeter[] = [];
     public comuni: string[] = [];
     public moods: string[] = [];
     public slidesVisible: boolean = false;
@@ -68,11 +68,11 @@ export class HomePage implements OnInit {
         'circle-radius': {
             'base': 1.75,
             'stops': [
-                [0, 0],
-                [6, 1],
-                [8, 2],
-                [11, 4],
-                [12, 5]
+                [0, 2],
+                [6, 4],
+                [8, 5],
+                [11, 6],
+                [12, 12]
             ]
         },
         'circle-color': [
@@ -247,39 +247,30 @@ export class HomePage implements OnInit {
         }
     }
     private refreshSlides() {
-        return ;
-        let mapCenter = [this.homeMap.getCenter().lng, this.homeMap.getCenter().lat];
         let renderedFeatures: maplibregl.MapboxGeoJSONFeature[] = this.homeMap
-            .queryRenderedFeatures(null, { "layers": ["strutture-layer"] })
-            .sort((f1: any, f2: any) => {
-                let f1ToCenter = distance(mapCenter, f1.geometry.coordinates);
-                let f2ToCenter = distance(mapCenter, f2.geometry.coordinates);
-                return f1ToCenter - f2ToCenter;
-                // return distance(f1.geometry.coordinates, f2.geometry.coordinates);
-            })
-        let filteredFeatures = this.filterService.applyFilters(renderedFeatures, "properties");
-        let filterdIds: number[] = filteredFeatures.map(f => f.nome);
-
+        .queryRenderedFeatures(null, { "layers": ["strutture-layer"] });
+        let filterdIds: any[] = renderedFeatures.map(f => f.id);
+        
         renderedFeatures.map(f => {
             let isMatch = filterdIds.includes(f.properties.nome);
             this.homeMap.setFeatureState({ source: 'strutture', id: f.properties.nome }, { "isMatch": isMatch });
         });
         if (this.homeMap.getZoom() > 10) {
-            this.strutture = filteredFeatures
-                .map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
-
+            this.meters = renderedFeatures
+            .map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
+            
             this.swiperStrutture.swiperRef.virtual.removeAllSlides();
             this.swiperStrutture.swiperRef.updateSlides();
             this.swiperStrutture.swiperRef.virtual.update(true);
-            if (this.strutture.length) {
+            if (this.meters.length) {
                 this.swiperStrutture.swiperRef.slideTo(0);
-                let coordinates: LngLatLike = (renderedFeatures.find(f => f.properties.nome == this.strutture[0].nome).geometry as any).coordinates;
-                this.setMarker(this.strutture[0], coordinates);
-
+                let coordinates: LngLatLike = (renderedFeatures.find(f => f.properties.nome == this.meters[0].nome).geometry as any).coordinates;
+                this.setMarker(this.meters[0], coordinates);
+                
             }
-
+            
         } else {
-            this.strutture = [];
+            this.meters = [];
         }
     }
 
@@ -296,8 +287,8 @@ export class HomePage implements OnInit {
     }
 
     private handleLayerClick(clickedFeature: Feature<Geometry, { [name: string]: any; }>) {
-        let slideIdx = this.strutture.findIndex(s => s.nome === clickedFeature.id);
-        this.setMarker(this.strutture[slideIdx], (clickedFeature.geometry as any).coordinates);
+        let slideIdx = this.meters.findIndex(s => s.nome === clickedFeature.id);
+        this.setMarker(this.meters[slideIdx], (clickedFeature.geometry as any).coordinates);
 
         this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
     }
@@ -325,17 +316,17 @@ export class HomePage implements OnInit {
         this.homeMap.easeTo(easeOptions);
     }
 
-    public onChipClick(tipologia: string) {
-        if (this.moodSelezionati.includes(tipologia)) {
-            remove(this.moodSelezionati, t => t == tipologia);
-            if (!this.moodSelezionati.length) {
-                this.moodSelezionati = [...this.moods];
-            }
-        } else {
-            this.moodSelezionati.push(tipologia);
-        }
-        this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.moodSelezionati });
-        this.refreshSlides();
+    public onChipClick(meter: Moodmeter) {
+        // if (this.moodSelezionati.includes(tipologia)) {
+        //     remove(this.moodSelezionati, t => t == tipologia);
+        //     if (!this.moodSelezionati.length) {
+        //         this.moodSelezionati = [...this.moods];
+        //     }
+        // } else {
+        //     this.moodSelezionati.push(tipologia);
+        // }
+        // this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.moodSelezionati });
+        // this.refreshSlides();
     }
 
     private createMarker(color: string = 'red'): maplibregl.Marker {
@@ -370,7 +361,7 @@ export class HomePage implements OnInit {
 
     public onSlideChange(event: any) {
         let index = event.activeIndex;
-        let struttura = this.strutture[index];
+        let struttura = this.meters[index];
         let geojsonPoint = this.metersGeoJson.features.find(f => f.properties.nome == struttura.nome);
         const coordinates = get(geojsonPoint, 'geometry.coordinates', []).slice();
         this.setMarker(struttura, coordinates);

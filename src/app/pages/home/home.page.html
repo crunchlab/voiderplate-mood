@@ -14,13 +14,12 @@
                 </ion-fab-button>
             </div>
             <div #tipologieFilter class="horizontal_scroll_flex">
-                <ion-chip mode="md" class="filter_chip" (click)="onChipClick(mood)"
-                    [attr.data-filterPropertyValue]="mood.replaceAll(' ', '_').replaceAll('\'','')"
+                <ion-chip mode="md" class="filter_chip chip_selected" (click)="onChipClick(meter)"
+                    [attr.data-filterPropertyValue]="meter.mood"
                     data-filterPropertyName="tipologia"
-                    [ngClass]="{'chip_selected': moodSelezionati.includes(mood)}"
-                    *ngFor="let mood of moods">
+                    *ngFor="let meter of meters">
                     <ion-icon name="ellipse" color="dark"></ion-icon>
-                    <ion-label>{{mood}}</ion-label>
+                    <ion-label>{{meter.nome}}</ion-label>
                 </ion-chip>
                 <!-- <a [routerLink]="['/','advanced-search']"> -->
                 <!-- <ion-chip mode="md" class="filter_chip advanced_search" (click)="openSearchModal()">
@@ -43,19 +42,19 @@
                 </mgl-layer>
             </mgl-map>
         </div>
-        <swiper #swiperStrutture [slidesPerView]="1.5" [ngClass]="{'visible_slides': strutture.length}"
+        <swiper #swiperStrutture [slidesPerView]="1.5" [ngClass]="{'visible_slides': meters.length}"
             [noSwiping]="false" [allowTouchMove]="true" [centeredSlides]="true" [spaceBetween]="10" [virtual]="true"
             (slideChange)="onSlideChange($event)">
-            <ng-container *ngFor="let meter of strutture;">
+            <ng-container *ngFor="let meter of meters;">
                 <ng-template class="struttura_slide" swiperSlide *transloco="let t">
                     <ion-grid class="ion-no-margin">
-                        <a [routerLink]="['/','detail',meter.nome]">
-                            <ion-row class="ion-no-margin">
-                                <ion-col class="ion-no-margin">
-                                    <h5 class="struttura_slide_titolo">{{meter.nome | titlecase}} </h5>
-                                </ion-col>
-                            </ion-row>
-                        </a>
+                        <ion-row class="ion-no-margin">
+                            <ion-col class="ion-no-margin">
+                                <h5 class="struttura_slide_titolo">{{meter.nome | titlecase}} </h5>
+                            </ion-col>
+                        </ion-row>
+                        <!-- <a [routerLink]="['/','detail',meter.nome]">
+                        </a> -->
                         <ion-row class="ion-no-margin">
                             <ion-col class="ion-no-margin">
                                 
