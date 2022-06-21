@@ -163,7 +163,6 @@ export class HomePage implements OnInit {
     public mapLoaded(event: any) {
         this.homeMap = event;
 
-
         const app = initializeApp(this.firebaseConfig);
 
         // Initialize Realtime Database and get a reference to the service
@@ -171,9 +170,9 @@ export class HomePage implements OnInit {
         const starCountRef = ref(db, '/');
         onValue(starCountRef, (snapshot) => {
             const data = snapshot.val();
-            // console.log(data);
-         
-            this.metersGeoJson.features = _.chain(data)
+            let clone = _.cloneDeep(this.metersGeoJson);
+            (this.metersGeoJson as any) = {};
+            clone.features = _.chain(data)
                 .map((d, k) => {
                     let feat: Feature = {
                         "type": "Feature",
@@ -197,8 +196,9 @@ export class HomePage implements OnInit {
                 })
                 .value();
             
-            this.metersGeoJson = { ...this.metersGeoJson };
-            console.dir(this.metersGeoJson.features);
+            this.metersGeoJson = { ...clone };
+            console.dir(clone);
+            // (this.homeMap.getSource('strutture') as any).setData(clone);
             this.meters = this.metersGeoJson.features.map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
             
         });
