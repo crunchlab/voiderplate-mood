@@ -16,7 +16,8 @@
             <div #tipologieFilter class="horizontal_scroll_flex">
                 <ion-chip mode="md" class="filter_chip chip_selected" (click)="onChipClick(meter)"
                     [attr.data-filterPropertyValue]="meter.mood"
-                    data-filterPropertyName="tipologia"
+                    [attr.data-mood]="meter.mood"
+                    data-filterPropertyName="mood"
                     *ngFor="let meter of meters">
                     <ion-icon name="ellipse" color="dark"></ion-icon>
                     <ion-label>{{meter.nome}}</ion-label>
@@ -31,14 +32,14 @@
         <div #mapContainer id="mapContainer">
             <mgl-map #homeMap [attributionControl]="false" [style]="mapStyle" [zoom]="[9]" (mapLoad)="mapLoaded($event)"
                 (zoomEnd)="mapZoomEnd($event)" (mapDragEnd)="onDragEnd($event)" [center]="[12.5510662,45.6331619]">
-                <mgl-geojson-source id="strutture" [data]="metersGeoJson" promoteId="nome">
+                <mgl-geojson-source id="strutture" *ngIf="metersGeoJson.features.length" [data]="metersGeoJson" promoteId="nome">
                 </mgl-geojson-source>
 
-                <mgl-layer [minzoom]="10" id="strutture-label-layer" type="symbol" source="strutture"
+                <mgl-layer [minzoom]="10" id="strutture-label-layer" *ngIf="metersGeoJson.features.length" type="symbol" source="strutture"
                     [layout]="struttureLabelLayout" [paint]="labelPaint">
                 </mgl-layer>
 
-                <mgl-layer id="strutture-layer" type="circle" source="strutture" [paint]="struttureCirclePaint">
+                <mgl-layer id="strutture-layer" type="circle" source="strutture" *ngIf="metersGeoJson.features.length" [paint]="struttureCirclePaint">
                 </mgl-layer>
             </mgl-map>
         </div>

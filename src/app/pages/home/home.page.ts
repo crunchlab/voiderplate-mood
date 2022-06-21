@@ -218,20 +218,20 @@ export class HomePage implements OnInit {
 
         this.homeMap.on('click', 'strutture-layer', (e: any) => {
             let clickedFeature = get(e, 'features[0]', null);
-            if (!isNil(clickedFeature) && clickedFeature.state.isMatch) {
+            if (!isNil(clickedFeature)) {
                 this.handleLayerClick(clickedFeature);
             }
         });
         this.homeMap.on('click', 'strutture-label-layer', (e: any) => {
             let clickedFeature = get(e, 'features[0]', null);
-            if (!isNil(clickedFeature) && clickedFeature.state.isMatch) {
+            if (!isNil(clickedFeature)) {
                 this.handleLayerClick(clickedFeature);
             }
         });
 
         event.resize();
-        // let filterCoordinates: LngLatLike[] = this.metersGeoJson.features.map(f => (f.geometry as any).coordinates);
-        // this.fitResultsBBox(filterCoordinates);
+        let filterCoordinates: LngLatLike[] = this.metersGeoJson.features.map(f => (f.geometry as any).coordinates);
+        this.fitResultsBBox(filterCoordinates);
     }
 
 
@@ -295,16 +295,8 @@ export class HomePage implements OnInit {
     }
 
     public onChipClick(meter: Moodmeter) {
-        // if (this.moodSelezionati.includes(tipologia)) {
-        //     remove(this.moodSelezionati, t => t == tipologia);
-        //     if (!this.moodSelezionati.length) {
-        //         this.moodSelezionati = [...this.moods];
-        //     }
-        // } else {
-        //     this.moodSelezionati.push(tipologia);
-        // }
-        // this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.moodSelezionati });
-        // this.refreshSlides();
+        let slideIdx = this.meters.findIndex(s => s.nome === meter.nome);
+        this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
     }
 
     private createMarker(color: string = 'red'): maplibregl.Marker {
@@ -346,19 +338,20 @@ export class HomePage implements OnInit {
     }
 
 
-    private setMarker(meter: Moodmeter, coordinates: any) {
-        if (this.marker) {
-            this.marker.remove();
-        }
-        this.marker = this.createMarker();
-        let color: string = get(COLOR_MAP, `mood[${meter.mood}]`, COLOR_MAP.mood["3"]);
-        this.marker.getElement()
-            .querySelector('svg g:nth-child(2)')
-            .setAttribute("fill", color);
-        this.marker
-            .setLngLat(coordinates)
-            .addTo(this.homeMap);
-    }
+    // non necessario per moodmeter
+    // private setMarker(meter: Moodmeter, coordinates: any) {
+    //     if (this.marker) {
+    //         this.marker.remove();
+    //     }
+    //     this.marker = this.createMarker();
+    //     let color: string = get(COLOR_MAP, `mood[${meter.mood}]`, COLOR_MAP.mood["3"]);
+    //     this.marker.getElement()
+    //         .querySelector('svg g:nth-child(2)')
+    //         .setAttribute("fill", color);
+    //     this.marker
+    //         .setLngLat(coordinates)
+    //         .addTo(this.homeMap);
+    // }
 
     async openSearchModal() {
         const modal = await this.modalController.create({
