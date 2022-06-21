@@ -76,25 +76,14 @@ export class HomePage implements OnInit {
         },
         'circle-color': [
             'case',
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALTRA_RICETTIVITA"]],
-            COLOR_MAP.tipologia.ALTRA_RICETTIVITA,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALBERGO"]],
-            COLOR_MAP.tipologia.ALBERGO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "APPARTAMENTO"]],
-            COLOR_MAP.tipologia.APPARTAMENTO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AGRITURISMO"]],
-            COLOR_MAP.tipologia.AGRITURISMO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "BED AND BREAKFAST"]],
-            COLOR_MAP.tipologia.BED_AND_BREAKFAST,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "CAMPEGGIO"]],
-            COLOR_MAP.tipologia.CAMPEGGIO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AFFITTACAMERE"]],
-            COLOR_MAP.tipologia.AFFITTACAMERE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "COUNTRY HOUSE"]],
-            COLOR_MAP.tipologia.COUNTRY_HOUSE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "RESIDENCE"]],
-            COLOR_MAP.tipologia.RESIDENCE,
-            'transparent'
+            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "0"]],
+            COLOR_MAP.mood["0"],
+            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "1"]],
+            COLOR_MAP.mood["1"],
+            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "2"]],
+            COLOR_MAP.mood["2"],
+
+            COLOR_MAP.mood["3"]
         ],
         'circle-stroke-color': 'transparent',
         'circle-stroke-width': 1,
@@ -135,25 +124,13 @@ export class HomePage implements OnInit {
         ],
         "text-color": [
             'case',
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALTRA_RICETTIVITA"]],
-            COLOR_MAP.tipologia.ALTRA_RICETTIVITA,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALBERGO"]],
-            COLOR_MAP.tipologia.ALBERGO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "APPARTAMENTO"]],
-            COLOR_MAP.tipologia.APPARTAMENTO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AGRITURISMO"]],
-            COLOR_MAP.tipologia.AGRITURISMO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "BED AND BREAKFAST"]],
-            COLOR_MAP.tipologia.BED_AND_BREAKFAST,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "CAMPEGGIO"]],
-            COLOR_MAP.tipologia.CAMPEGGIO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AFFITTACAMERE"]],
-            COLOR_MAP.tipologia.AFFITTACAMERE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "COUNTRY HOUSE"]],
-            COLOR_MAP.tipologia.COUNTRY_HOUSE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "RESIDENCE"]],
-            COLOR_MAP.tipologia.RESIDENCE,
-            COLOR_MAP.tipologia.ALTRA_RICETTIVITA,
+            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "0"]],
+            COLOR_MAP.mood["0"],
+            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "1"]],
+            COLOR_MAP.mood["1"],
+            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'mood'], "2"]],
+            COLOR_MAP.mood["2"],
+            COLOR_MAP.mood["3"]
         ]
     };
 
@@ -418,7 +395,7 @@ export class HomePage implements OnInit {
             this.marker.remove();
         }
         this.marker = this.createMarker();
-        let color: string = get(COLOR_MAP, `mood[${meter.mood}]`, COLOR_MAP.tipologia.ALTRA_RICETTIVITA);
+        let color: string = get(COLOR_MAP, `mood[${meter.mood}]`, COLOR_MAP.mood["3"]);
         this.marker.getElement()
             .querySelector('svg g:nth-child(2)')
             .setAttribute("fill", color);
