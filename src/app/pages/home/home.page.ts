@@ -195,6 +195,8 @@ export class HomePage implements OnInit {
                 .value();
             
             this.metersGeoJson = { ...this.metersGeoJson };
+
+            this.meters = this.metersGeoJson.features.map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
             
         });
 
@@ -234,44 +236,20 @@ export class HomePage implements OnInit {
 
 
     public onDragEnd(evt: MapboxEvent<MouseEvent | TouchEvent | WheelEvent> & maplibregl.EventData) {
-        let isHuman = get(evt, 'originalEvent.isTrusted', true);
-        if (isHuman) {
-            this.refreshSlides();
-        }
+        // let isHuman = get(evt, 'originalEvent.isTrusted', true);
+        // if (isHuman) {
+        //     this.refreshSlides();
+        // }
 
     }
     public mapZoomEnd(evt: MapboxEvent<MouseEvent | TouchEvent | WheelEvent> & maplibregl.EventData) {
-        let isHuman = get(evt, 'originalEvent.isTrusted', true);
-        if (isHuman) {
-            this.refreshSlides();
-        }
+        // let isHuman = get(evt, 'originalEvent.isTrusted', true);
+        // if (isHuman) {
+        //     this.refreshSlides();
+        // }
     }
     private refreshSlides() {
-        let renderedFeatures: maplibregl.MapboxGeoJSONFeature[] = this.homeMap
-        .queryRenderedFeatures(null, { "layers": ["strutture-layer"] });
-        let filterdIds: any[] = renderedFeatures.map(f => f.id);
-        
-        renderedFeatures.map(f => {
-            let isMatch = filterdIds.includes(f.properties.nome);
-            this.homeMap.setFeatureState({ source: 'strutture', id: f.properties.nome }, { "isMatch": isMatch });
-        });
-        if (this.homeMap.getZoom() > 10) {
-            this.meters = renderedFeatures
-            .map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
-            
-            this.swiperStrutture.swiperRef.virtual.removeAllSlides();
-            this.swiperStrutture.swiperRef.updateSlides();
-            this.swiperStrutture.swiperRef.virtual.update(true);
-            if (this.meters.length) {
-                this.swiperStrutture.swiperRef.slideTo(0);
-                let coordinates: LngLatLike = (renderedFeatures.find(f => f.properties.nome == this.meters[0].nome).geometry as any).coordinates;
-                this.setMarker(this.meters[0], coordinates);
-                
-            }
-            
-        } else {
-            this.meters = [];
-        }
+        return;
     }
 
 
@@ -288,7 +266,7 @@ export class HomePage implements OnInit {
 
     private handleLayerClick(clickedFeature: Feature<Geometry, { [name: string]: any; }>) {
         let slideIdx = this.meters.findIndex(s => s.nome === clickedFeature.id);
-        this.setMarker(this.meters[slideIdx], (clickedFeature.geometry as any).coordinates);
+        // this.setMarker(this.meters[slideIdx], (clickedFeature.geometry as any).coordinates);
 
         this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
     }
@@ -364,7 +342,6 @@ export class HomePage implements OnInit {
         let struttura = this.meters[index];
         let geojsonPoint = this.metersGeoJson.features.find(f => f.properties.nome == struttura.nome);
         const coordinates = get(geojsonPoint, 'geometry.coordinates', []).slice();
-        this.setMarker(struttura, coordinates);
         this.homeMap.panTo(coordinates, { duration: 250 });
     }
 
