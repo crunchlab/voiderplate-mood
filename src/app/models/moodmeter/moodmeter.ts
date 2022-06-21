@@ -1,5 +1,5 @@
 export class Moodmeter {
     nome: string;
-    posizione: object;
+    posizione: any;
     mood: number;
 }

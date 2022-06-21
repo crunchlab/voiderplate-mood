@@ -187,7 +187,11 @@ export class HomePage implements OnInit {
                         },
                         "properties": {
                             "nome": k,
-                            "mood": d.mood+""
+                            "mood": d.mood+"",
+                            "posizione": {
+                                lat:d.lat,
+                                lon:d.lon
+                            }
                         }
                     };
                     return feat;
@@ -295,8 +299,17 @@ export class HomePage implements OnInit {
     }
 
     public onChipClick(meter: Moodmeter) {
+        console.log(meter);
         let slideIdx = this.meters.findIndex(s => s.nome === meter.nome);
         this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
+        let easeOptions: any = {
+            center: [meter.posizione.lon, meter.posizione.lat],
+            duration: 1200
+        };
+        if (this.homeMap.getZoom() < 13) {
+            easeOptions.zoom = 13;
+        }
+        this.homeMap.easeTo(easeOptions);
     }
 
     private createMarker(color: string = 'red'): maplibregl.Marker {

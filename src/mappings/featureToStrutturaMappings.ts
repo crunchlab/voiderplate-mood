@@ -10,6 +10,11 @@ const featureToMeterMappings: FieldMapping[] = [
         "field": "mood",
         "properties": "mood",
         "type": "number"
+    },
+    {
+        "field": "posizione",
+        "properties": "posizione",
+        "type": "array"
     }
 ];
 
