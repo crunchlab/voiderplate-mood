@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import * as maplibregl from 'maplibre-gl';
-import { get, isNil, remove, uniq } from 'lodash';
+import { get, isNil, uniq } from 'lodash';
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import SwiperCore, { Virtual } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
@@ -13,10 +13,7 @@ import { LngLatLike, MapboxEvent } from 'maplibre-gl';
 import { ModalController } from '@ionic/angular';
 import { AdvancedSearchPage } from '../advanced-search/advanced-search.page';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
-import distance from '@turf/distance';
-import struttureGeoJson from '../../../assets/data/strutture.json';
-import { Struttura } from '../../models/struttura/struttura';
-import { FeatureToStrutturaService } from '../../services/transformer/feature-to-struttura.service';
+import { FeatureToMeterService } from '../../services/transformer/feature-to-meter.service';
 import comuni from '../../../assets/data/comuni.json';
 import { AboutPage } from '../about/about.page';
 
@@ -25,6 +22,8 @@ import { getDatabase, onValue, ref } from "firebase/database";
 
 
 import { initializeApp } from "firebase/app";
+import _ from 'lodash';
+import { Moodmeter } from 'src/app/models/moodmeter/moodmeter';
 
 SwiperCore.use([Virtual]);
 @Component({
@@ -42,14 +41,17 @@ export class HomePage implements OnInit {
     public homeMap: maplibregl.Map;
     public selectedFeature: any = { lngLat: [0, 0] };
     public mapStyle = environment.mapStyle;
-    public struttureGeoJson: FeatureCollection = (struttureGeoJson as FeatureCollection);
+    public metersGeoJson: FeatureCollection = {
+        "type": "FeatureCollection",
+        "features": []
+    };
     public comuneSelezionato: string = "";
 
-    public strutture: Struttura[] = [];
+    public meters: Moodmeter[] = [];
     public comuni: string[] = [];
-    public tipologie: string[] = [];
+    public moods: string[] = [];
     public slidesVisible: boolean = false;
-    public tipologieSelezionate: string[] = [];
+    public moodSelezionati: string[] = [];
     private marker: maplibregl.Marker;
 
     firebaseConfig = {
@@ -65,34 +67,23 @@ export class HomePage implements OnInit {
         'circle-radius': {
             'base': 1.75,
             'stops': [
-                [0, 0],
-                [6, 1],
-                [8, 2],
-                [11, 4],
-                [12, 5]
+                [0, 2],
+                [6, 4],
+                [8, 5],
+                [11, 6],
+                [12, 12]
             ]
         },
         'circle-color': [
             'case',
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALTRA_RICETTIVITA"]],
-            COLOR_MAP.tipologia.ALTRA_RICETTIVITA,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALBERGO"]],
-            COLOR_MAP.tipologia.ALBERGO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "APPARTAMENTO"]],
-            COLOR_MAP.tipologia.APPARTAMENTO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AGRITURISMO"]],
-            COLOR_MAP.tipologia.AGRITURISMO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "BED AND BREAKFAST"]],
-            COLOR_MAP.tipologia.BED_AND_BREAKFAST,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "CAMPEGGIO"]],
-            COLOR_MAP.tipologia.CAMPEGGIO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AFFITTACAMERE"]],
-            COLOR_MAP.tipologia.AFFITTACAMERE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "COUNTRY HOUSE"]],
-            COLOR_MAP.tipologia.COUNTRY_HOUSE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "RESIDENCE"]],
-            COLOR_MAP.tipologia.RESIDENCE,
-            'transparent'
+            ['all',  ['==', ['get', 'mood'], "1"]],
+            COLOR_MAP.mood["1"],
+            ['all',  ['==', ['get', 'mood'], "2"]],
+            COLOR_MAP.mood["2"],
+            ['all',  ['==', ['get', 'mood'], "3"]],
+            COLOR_MAP.mood["3"],
+
+            COLOR_MAP.mood["4"]
         ],
         'circle-stroke-color': 'transparent',
         'circle-stroke-width': 1,
@@ -106,56 +97,44 @@ export class HomePage implements OnInit {
     public struttureLabelLayout: maplibregl.SymbolLayout =
         {
             "visibility": "visible",
-            "text-field": ["get", "denominazione"
+            "text-field": ["get", "nome"
             ],
             "text-font": [
                 "Open Sans Semibold",
                 "Arial Unicode MS Bold"
             ],
             "text-offset": [
-                0,
+                0.5,
                 0.5
             ],
             "text-anchor": "top",
             "text-size": [
                 'interpolate', ['linear'], ['zoom'],
-                10, 10,
-                30, 24
+                10, 12,
+                30, 30
             ]
         };
     public labelPaint: maplibregl.SymbolPaint = {
 
         "text-opacity": [
             'case',
-            ['boolean', ['feature-state', 'isMatch'], true],
+            
             1,
             0
         ],
         "text-color": [
             'case',
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALTRA_RICETTIVITA"]],
-            COLOR_MAP.tipologia.ALTRA_RICETTIVITA,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "ALBERGO"]],
-            COLOR_MAP.tipologia.ALBERGO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "APPARTAMENTO"]],
-            COLOR_MAP.tipologia.APPARTAMENTO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AGRITURISMO"]],
-            COLOR_MAP.tipologia.AGRITURISMO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "BED AND BREAKFAST"]],
-            COLOR_MAP.tipologia.BED_AND_BREAKFAST,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "CAMPEGGIO"]],
-            COLOR_MAP.tipologia.CAMPEGGIO,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "AFFITTACAMERE"]],
-            COLOR_MAP.tipologia.AFFITTACAMERE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "COUNTRY HOUSE"]],
-            COLOR_MAP.tipologia.COUNTRY_HOUSE,
-            ['all', ['boolean', ['feature-state', 'isMatch'], true], ['==', ['get', 'tipologia'], "RESIDENCE"]],
-            COLOR_MAP.tipologia.RESIDENCE,
-            COLOR_MAP.tipologia.ALTRA_RICETTIVITA,
+            ['all',  ['==', ['get', 'mood'], "1"]],
+            COLOR_MAP.mood["1"],
+            ['all',  ['==', ['get', 'mood'], "2"]],
+            COLOR_MAP.mood["2"],
+            ['all',  ['==', ['get', 'mood'], "3"]],
+            COLOR_MAP.mood["3"],
+            COLOR_MAP.mood["4"]
         ]
     };
 
-    constructor(private featureTransformer: FeatureToStrutturaService, private filterService: FilterServiceProvider, private mapUtils: MapUtilsService, public modalController: ModalController) {
+    constructor(private featureTransformer: FeatureToMeterService, private filterService: FilterServiceProvider, private mapUtils: MapUtilsService, public modalController: ModalController) {
     }
 
 
@@ -163,22 +142,14 @@ export class HomePage implements OnInit {
         this.openAboutModal();
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
-        let strutture = this.struttureGeoJson.features.map(feature => this.featureTransformer.featureToStruttura(feature as Feature));
-        this.comuni = uniq(strutture.map((s: Struttura) => s.comune)).sort();
-        this.tipologie = uniq(strutture.map((s: Struttura) => s.tipologia)).sort();
-        this.tipologieSelezionate = [...this.tipologie];
-        this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.tipologieSelezionate });
+        let meters = this.metersGeoJson.features.map(feature => this.featureTransformer.featureToMeter(feature as Feature));
 
-        const app = initializeApp(this.firebaseConfig);
-        
-        // Initialize Realtime Database and get a reference to the service
-        const db = getDatabase(app);
-       
-        const starCountRef = ref(db, '/');
-        onValue(starCountRef, (snapshot) => {
-            const data = snapshot.val();
-           console.log(data)
-        });
+        this.moods = uniq(meters.map((m: Moodmeter) => `${m.mood}`)).sort();
+        this.moodSelezionati = [...this.moods];
+        this.filterService.addFilter({ property: 'mood', operator: FilterOperator.eq, value: this.moodSelezionati });
+
+
+
 
     }
 
@@ -191,6 +162,46 @@ export class HomePage implements OnInit {
 
     public mapLoaded(event: any) {
         this.homeMap = event;
+
+        const app = initializeApp(this.firebaseConfig);
+
+        // Initialize Realtime Database and get a reference to the service
+        const db = getDatabase(app);
+        const starCountRef = ref(db, '/');
+        onValue(starCountRef, (snapshot) => {
+            const data = snapshot.val();
+            let clone = _.cloneDeep(this.metersGeoJson);
+            (this.metersGeoJson as any) = {};
+            clone.features = _.chain(data)
+                .map((d, k) => {
+                    let feat: Feature = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                d.lon,
+                                d.lat
+                            ]
+                        },
+                        "properties": {
+                            "nome": k,
+                            "mood": d.mood+"",
+                            "posizione": {
+                                lat:d.lat,
+                                lon:d.lon
+                            }
+                        }
+                    };
+                    return feat;
+                })
+                .value();
+            
+            this.metersGeoJson = { ...clone };
+            // console.dir(clone);
+            // (this.homeMap.getSource('strutture') as any).setData(clone);
+            this.meters = this.metersGeoJson.features.map((feature: Feature) => this.featureTransformer.featureToMeter(feature));
+            
+        });
 
         this.homeMap.on('mouseenter', 'strutture-layer', () => {
             this.homeMap.getCanvas().style.cursor = 'pointer';
@@ -210,70 +221,38 @@ export class HomePage implements OnInit {
 
         this.homeMap.on('click', 'strutture-layer', (e: any) => {
             let clickedFeature = get(e, 'features[0]', null);
-            if (!isNil(clickedFeature) && clickedFeature.state.isMatch) {
+            if (!isNil(clickedFeature)) {
                 this.handleLayerClick(clickedFeature);
             }
         });
         this.homeMap.on('click', 'strutture-label-layer', (e: any) => {
             let clickedFeature = get(e, 'features[0]', null);
-            if (!isNil(clickedFeature) && clickedFeature.state.isMatch) {
+            if (!isNil(clickedFeature)) {
                 this.handleLayerClick(clickedFeature);
             }
         });
 
         event.resize();
-        let filterCoordinates: LngLatLike[] = this.struttureGeoJson.features.map(f => (f.geometry as any).coordinates);
+        let filterCoordinates: LngLatLike[] = this.metersGeoJson.features.map(f => (f.geometry as any).coordinates);
         this.fitResultsBBox(filterCoordinates);
     }
 
 
     public onDragEnd(evt: MapboxEvent<MouseEvent | TouchEvent | WheelEvent> & maplibregl.EventData) {
-        let isHuman = get(evt, 'originalEvent.isTrusted', true);
-        if (isHuman) {
-            this.refreshSlides();
-        }
+        // let isHuman = get(evt, 'originalEvent.isTrusted', true);
+        // if (isHuman) {
+        //     this.refreshSlides();
+        // }
 
     }
     public mapZoomEnd(evt: MapboxEvent<MouseEvent | TouchEvent | WheelEvent> & maplibregl.EventData) {
-        let isHuman = get(evt, 'originalEvent.isTrusted', true);
-        if (isHuman) {
-            this.refreshSlides();
-        }
+        // let isHuman = get(evt, 'originalEvent.isTrusted', true);
+        // if (isHuman) {
+        //     this.refreshSlides();
+        // }
     }
     private refreshSlides() {
-        let mapCenter = [this.homeMap.getCenter().lng, this.homeMap.getCenter().lat];
-        let renderedFeatures: maplibregl.MapboxGeoJSONFeature[] = this.homeMap
-            .queryRenderedFeatures(null, { "layers": ["strutture-layer"] })
-            .sort((f1: any, f2: any) => {
-                let f1ToCenter = distance(mapCenter, f1.geometry.coordinates);
-                let f2ToCenter = distance(mapCenter, f2.geometry.coordinates);
-                return f1ToCenter - f2ToCenter;
-                // return distance(f1.geometry.coordinates, f2.geometry.coordinates);
-            })
-        let filteredFeatures = this.filterService.applyFilters(renderedFeatures, "properties");
-        let filterdIds: number[] = filteredFeatures.map(f => f.codiceIdentificativo);
-
-        renderedFeatures.map(f => {
-            let isMatch = filterdIds.includes(f.properties.codiceIdentificativo);
-            this.homeMap.setFeatureState({ source: 'strutture', id: f.properties.codiceIdentificativo }, { "isMatch": isMatch });
-        });
-        if (this.homeMap.getZoom() > 10) {
-            this.strutture = filteredFeatures
-                .map((feature: Feature) => this.featureTransformer.featureToStruttura(feature));
-
-            this.swiperStrutture.swiperRef.virtual.removeAllSlides();
-            this.swiperStrutture.swiperRef.updateSlides();
-            this.swiperStrutture.swiperRef.virtual.update(true);
-            if (this.strutture.length) {
-                this.swiperStrutture.swiperRef.slideTo(0);
-                let coordinates: LngLatLike = (renderedFeatures.find(f => f.properties.codiceIdentificativo == this.strutture[0].codiceIdentificativo).geometry as any).coordinates;
-                this.setMarker(this.strutture[0], coordinates);
-
-            }
-
-        } else {
-            this.strutture = [];
-        }
+        return;
     }
 
 
@@ -289,8 +268,8 @@ export class HomePage implements OnInit {
     }
 
     private handleLayerClick(clickedFeature: Feature<Geometry, { [name: string]: any; }>) {
-        let slideIdx = this.strutture.findIndex(s => s.codiceIdentificativo === clickedFeature.id);
-        this.setMarker(this.strutture[slideIdx], (clickedFeature.geometry as any).coordinates);
+        let slideIdx = this.meters.findIndex(s => s.nome === clickedFeature.id);
+        // this.setMarker(this.meters[slideIdx], (clickedFeature.geometry as any).coordinates);
 
         this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
     }
@@ -318,17 +297,18 @@ export class HomePage implements OnInit {
         this.homeMap.easeTo(easeOptions);
     }
 
-    public onChipClick(tipologia: string) {
-        if (this.tipologieSelezionate.includes(tipologia)) {
-            remove(this.tipologieSelezionate, t => t == tipologia);
-            if (!this.tipologieSelezionate.length) {
-                this.tipologieSelezionate = [...this.tipologie];
-            }
-        } else {
-            this.tipologieSelezionate.push(tipologia);
+    public onChipClick(meter: Moodmeter) {
+        console.log(meter);
+        let slideIdx = this.meters.findIndex(s => s.nome === meter.nome);
+        this.swiperStrutture.swiperRef.slideTo(slideIdx, 1200);
+        let easeOptions: any = {
+            center: [meter.posizione.lon, meter.posizione.lat],
+            duration: 1200
+        };
+        if (this.homeMap.getZoom() < 13) {
+            easeOptions.zoom = 13;
         }
-        this.filterService.addFilter({ property: 'tipologia', operator: FilterOperator.in, value: this.tipologieSelezionate });
-        this.refreshSlides();
+        this.homeMap.easeTo(easeOptions);
     }
 
     private createMarker(color: string = 'red'): maplibregl.Marker {
@@ -363,27 +343,27 @@ export class HomePage implements OnInit {
 
     public onSlideChange(event: any) {
         let index = event.activeIndex;
-        let struttura = this.strutture[index];
-        let geojsonPoint = this.struttureGeoJson.features.find(f => f.properties.codiceIdentificativo == struttura.codiceIdentificativo);
+        let struttura = this.meters[index];
+        let geojsonPoint = this.metersGeoJson.features.find(f => f.properties.nome == struttura.nome);
         const coordinates = get(geojsonPoint, 'geometry.coordinates', []).slice();
-        this.setMarker(struttura, coordinates);
         this.homeMap.panTo(coordinates, { duration: 250 });
     }
 
 
-    private setMarker(struttura: Struttura, coordinates: any) {
-        if (this.marker) {
-            this.marker.remove();
-        }
-        this.marker = this.createMarker();
-        let color: string = get(COLOR_MAP, `tipologia[${struttura.tipologia.replaceAll(' ', '_').toUpperCase()}]`, COLOR_MAP.tipologia.ALTRA_RICETTIVITA);
-        this.marker.getElement()
-            .querySelector('svg g:nth-child(2)')
-            .setAttribute("fill", color);
-        this.marker
-            .setLngLat(coordinates)
-            .addTo(this.homeMap);
-    }
+    // non necessario per moodmeter
+    // private setMarker(meter: Moodmeter, coordinates: any) {
+    //     if (this.marker) {
+    //         this.marker.remove();
+    //     }
+    //     this.marker = this.createMarker();
+    //     let color: string = get(COLOR_MAP, `mood[${meter.mood}]`, COLOR_MAP.mood["3"]);
+    //     this.marker.getElement()
+    //         .querySelector('svg g:nth-child(2)')
+    //         .setAttribute("fill", color);
+    //     this.marker
+    //         .setLngLat(coordinates)
+    //         .addTo(this.homeMap);
+    // }
 
     async openSearchModal() {
         const modal = await this.modalController.create({

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Struttura } from '../../models/struttura/struttura';
+import { Moodmeter } from '../../models/Moodmeter/Moodmeter';
 import { find, flatten, get, pick, uniq } from 'lodash';
-import { FeatureToStrutturaService } from '../transformer/feature-to-struttura.service';
-
-import strutture from '../../../assets/data/strutture.json';
+import { FeatureToMeterService } from '../transformer/feature-to-meter.service';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
 import { FieldMapping } from '../../interfaces/fieldMapping.interface';
 import { FilterOperator } from '../../enums/filterOperator.enum';
@@ -11,19 +9,19 @@ import { environment } from '../../../environments/environment';
 @Injectable({
     providedIn: 'root'
 })
-export class StrutturaService {
-    strutture: Struttura[] = [];
+export class MoodmeterService {
+    strutture: Moodmeter[] = [];
     mappings: FieldMapping[] = environment.filtersFieldMappings;
 
 
-    constructor(private transformer: FeatureToStrutturaService) {
-        this.strutture = strutture.features.map((f: any) => this.transformer.featureToStruttura(f));
+    constructor(private transformer: FeatureToMeterService) {
+        this.strutture = [];
     }
 
 
-    public getDetail(id: string | number): Struttura {
-        let struttura: Struttura = find(this.strutture, (s: Struttura) => s.codiceIdentificativo == (id as number)) as Struttura;
-        return struttura;
+    public getDetail(id: string | number): Moodmeter {
+        let Moodmeter: Moodmeter = find(this.strutture, (s: Moodmeter) => s.nome == id) as Moodmeter;
+        return Moodmeter;
     }
 
     /**
@@ -35,7 +33,7 @@ export class StrutturaService {
         let filters: AttributeFilter[] = []
         filters = this.mappings.map((mapping: FieldMapping) => {
             let filter: AttributeFilter = { property: '', value: '', operator: FilterOperator.in };
-            let values: any = this.strutture.map((s: Struttura) => {
+            let values: any = this.strutture.map((s: Moodmeter) => {
                 if (Array.isArray(mapping.properties)) {
                     return pick(s, mapping.properties);
                 } else {

@@ -15,75 +15,33 @@
     }
     &.chip_selected {
         background-color: #d0d0d0; //var(--ion-color-light-tint);
-        &[data-filterPropertyName="tipologia"] {
+        &[data-filterPropertyName="mood"] {
             background-color: var(--ion-color-primary-contrast); //var(--ion-color-light-tint);
         }
     }
-    &[data-filterPropertyValue="AFFITTACAMERE"] {
+    &[data-filterPropertyValue="1"] {
         &.chip_selected {
             ion-icon {
-                fill: var(--tipologia-background-affittacamere);
+                fill: var(--mood-1);
             }
             // background-color: var(--tipologia-background-affittacamere);
         }
         // border-color: var(--tipologia-background-affittacamere);
     }
-    &[data-filterPropertyValue="AGRITURISMO"] {
+    &[data-filterPropertyValue="2"] {
         &.chip_selected {
             ion-icon {
-                fill: var(--tipologia-background-agriturismo);
+                fill: var(--mood-2);
             }
             // background-color: var(--tipologia-background-agriturismo);
             color: var(--ion-color-dark);
         }
         // border-color: var(--tipologia-background-agriturismo);
     }
-    &[data-filterPropertyValue="ALBERGO"] {
+    &[data-filterPropertyValue="3"] {
         &.chip_selected {
             ion-icon {
-                fill: var(--tipologia-background-albergo);
-            }
-        }
-    }
-    &[data-filterPropertyValue="ALTRA_RICETTIVITA"] {
-        &.chip_selected {
-            ion-icon {
-                fill: var(--tipologia-background-altra_ricettivita);
-            }
-        }
-    }
-    &[data-filterPropertyValue="APPARTAMENTO"] {
-        &.chip_selected {
-            ion-icon {
-                fill: var(--tipologia-background-appartamento);
-            }
-        }
-    }
-    &[data-filterPropertyValue="BED_AND_BREAKFAST"] {
-        &.chip_selected {
-            ion-icon {
-                fill: var(--tipologia-background-bed_and_breakfast);
-            }
-        }
-    }
-    &[data-filterPropertyValue="CAMPEGGIO"] {
-        &.chip_selected {
-            ion-icon {
-                fill: var(--tipologia-background-campeggio);
-            }
-        }
-    }
-    &[data-filterPropertyValue="COUNTRY_HOUSE"] {
-        &.chip_selected {
-            ion-icon {
-                fill: var(--tipologia-background-country_house);
-            }
-        }
-    }
-    &[data-filterPropertyValue="RESIDENCE"] {
-        &.chip_selected {
-            ion-icon {
-                fill: var(--tipologia-background-residence);
+                fill: var(--mood-3);
             }
         }
     }

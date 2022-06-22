@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FilterServiceProvider } from '../../services/filters/filter-service-provider.service';
-import { StrutturaService } from '../../services/api/struttura.service';
+import { MoodmeterService } from '../../services/api/moodmeter.service';
 import { AttributeFilter } from '../../interfaces/attributeFilter.interface';
 import { cloneDeep, isNil, remove } from 'lodash';
 import { ModalController } from '@ionic/angular';
@@ -14,8 +14,8 @@ export class AdvancedSearchPage implements OnInit {
 
     public filters: AttributeFilter[] = [];
     public selectedFilters: AttributeFilter[] = [];
-    constructor(private filterService: FilterServiceProvider, private strutturaService: StrutturaService, private modalController: ModalController) {
-        this.filters = this.strutturaService.getFilterValues();
+    constructor(private filterService: FilterServiceProvider, private meterService: MoodmeterService, private modalController: ModalController) {
+        this.filters = this.meterService.getFilterValues();
         this.selectedFilters = this.filterService.getFilters();
         console.log('constructor', this.filterService.getFilters());
 
